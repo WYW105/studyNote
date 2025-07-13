@@ -1,0 +1,106 @@
+
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>焦点访谈：中国底气 新思想夯实大国粮仓</title>
+  
+  <!-- 内部脚本 -->
+  <script>
+    // 输出方式一：弹框
+    alert("JS");
+    // 输出方式二：内容写入到html页面
+    document.write("这是document.write()输出的");
+    // 控制台输出
+    console.log("dd");
+
+    // 定义函数一
+    function add(a,b) {
+      return a+b;
+    }
+
+    var result = add(10,20);
+    console.log(result);
+
+    // 定义函数二
+    var add2 = function (a,b) {
+      return a+b;
+    }
+
+    // 定义数组
+    var arr = new Array(1,2,3,4);
+    console.log(arr[0]);
+    //JS数组的长度可变，元素类型可变。
+    var arr2 = [1,2,3,4];
+    arr2[10] = 10; // 中间空的是undefined
+    arr2[9] = "dghh";
+
+    var str = "sdgh";
+    console.log(str.length);
+    str.charAt(1);
+    str.indexOf("d");
+  </script>
+
+  <!-- 外部脚本 -->
+   <script src=""></script>
+  <style>
+    h1 {
+      color: brown;
+    }
+    .cls {
+      color:aqua
+    }
+    #ys {
+      color: beige;
+    }
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+    p {
+      /* 首行缩进2厘米 */
+      text-indent:2cm;
+      /* 行高 */
+      line-height: 45px;
+    }
+  </style>
+
+   <link rel="stylesheet" href="../css/1.css">
+</head>
+<body>
+  <img src="../image-1.png" width="30px">
+  
+  <!-- a标签是超链接，target是当前页面打开还是新页面打开 -->
+  <a href="http://gov.sina.cn/" target="_blank">新浪政务</a> > 正文
+
+  <h1 class="cls" style="color: cadetblue;">焦点访谈：中国底气 新思想夯实大国粮仓</h1>
+  <hr>
+    <span class="cls">2025年2月</span> <span id="ys">央视网</span>
+  <hr>
+
+  <!-- 正文 -->
+
+  <!-- controls属性是播放控件，加上才能播放 -->
+   <video src="../video/《无所畏惧》第12集高清云播免费观看全集_九七电影网.mp4" controls width="950px"></video>
+
+   <p><b>这是</b>一段落</p>
+   <p>这是一段落</p>
+   <p>这是一段落</p>
+
+   <!-- 靠右对齐 -->
+   <p style="text-align: right;">责任编辑</p>
+
+   <!-- 表单 -->
+    <!-- action指定表单提交的url，不填则默认提交到当当前页面 -->
+     <!-- method指定表单提交的方法，get方法没有请求体是在url后面拼接表单数据 -->
+    <form action="" method="get">
+
+      <!-- 表单项标签input、select、textarea等 -->
+      用户名：<input type="text", name="username">
+      年龄：<input type="text", name="age">
+      <input type="submit" value="提交">
+    </form>
+  
+</body>
+</html>
