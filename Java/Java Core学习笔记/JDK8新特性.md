@@ -1,7 +1,55 @@
-1. Lambda表达式是替代匿名内部类。编译时只生成一个私有静态方法（Lambda里面的代码），会在运行的时候**动态生成一个实现了目标接口的类**来替代匿名内部类。然后**JVM会基于这个类创建实例对象**。
-2. 性能区别就是，**匿名内部类每次new都要创建新对象**，但是**Lambda表达式如果不需要捕获外部变量，JVM会复用同一个单例实例，GC压力更小**。
+1. 匿名内部类写法：编译之后会生成一个独立的LengthComparator的.class文件，每次代码运行到这里都要创建这个类对象并分配内存，GC压力大。
 
-3. Optional作为方法的返回值，核心就是强制养成好习惯：写代码时就要把返回值可能不存在的情况考虑进去，作为处理流程的一个常规分支，而不是抛出空指针异常NullPointerException。
+   ```java
+        class LengthComparator implements Comparator<String> {
+            public int compare(String first, String second) {
+                return first.length() - second.length();
+            }
+        }
+        Arrays.sort(friends, new LengthComparator());
+   ```
+
+2. Lambda表达式是替代匿名内部类。
+
+   (1). **编译时把Lambda体抽成一个私有方法，并生成invokedynamic指令**。
+
+   ```java
+    源码：
+    Comparator<Integer> comparator = (a, b) -> Integer.compare(a, b);
+
+    编译后类似：
+    Comparator<Integer> comparator = invokedynamic(...)
+
+   ```
+
+   (2). 第一次运行到这里时，invokedynamic指令会调用LambdaMetafactory.metafactory()方法。该方法返回一个CallSite调用点，该调用点指向一个MethodHandle方法句柄,这个MethodHandle方法句柄是用于创建或获取到函数式接口的实例对象，因此**MethodHandle方法句柄主要是生成或创建实例对象的逻辑，此时实例对象可能还没被真的生成**。
+
+   (3). 后续运行到这里时因为这个调用点已经连接好了，通常不会重复调用LambdaMetafactory.metafactory()方法。
+
+   (4). 对于不捕获外部变量的 Lambda，JVM 通常可以复用同一个实例；对于捕获外部变量的 Lambda，则需要保存捕获变量，因为外部变量可能会变化，就要重新创建实例对象。==> 因此Lambda表达式不一定每次都会创建新的实例对象，GC压力更低。==> 这里是否复用同一个实例对象和上述是否重复调用LambdaMetafactory.metafactory()方法是两回事。
+
+   ```java
+    Arrays.sort(friends, (first, second) -> first.length() - second.length());
+   ```
+
+3. 方法引用本质上可以看成 Lambda 的一种简写形式，底层通常同样通过 invokedynamic 和 LambdaMetafactory.metafactory() 来生成或获取函数式接口实例。==> 方法引用和Lambda的性能上没什么优劣之分。
+
+4. Lambda表达式的延迟执行，本质是**行为参数化**。Lambda 里面那段代码不会在定义 Lambda 的地方立刻执行，而是被包装成函数式接口对象，等到这个接口方法被真正调用时才执行。
+
+   ```java
+        //这里不会立刻执行Lambda表达式里写的方法，
+        Runnable r = () -> {
+            System.out.println("执行 Lambda 代码");
+        };
+
+        System.out.println("Lambda 已经定义完成");
+
+
+        // 等到run方法被调用的时候，才会执行。run方法就是函数式接口的那个唯一的抽象方法
+        r.run();
+   ```
+
+5. Optional作为方法的返回值，核心就是强制养成好习惯：写代码时就要把返回值可能不存在的情况考虑进去，作为处理流程的一个常规分支，而不是抛出空指针异常NullPointerException。
 
    ```java
    import java.util.Optional;
@@ -113,7 +161,7 @@
 
    ```
 
-4. Stream：
+6. Stream：
 
    (1). 中间操作： 对于map、peek这种返回值是Stream\<T>的就可以继续链式调用,属于**中间操作**，中间操作**只要终端操作没被调用，中间操作就只是声明不会有任何数据处理**。map会把元素映射成新的元素，peek不改变元素。
 
